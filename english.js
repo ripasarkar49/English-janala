@@ -1,8 +1,16 @@
-const createElements=(arr)=>{
-const htmlElements=arr.map((el)=>`<span class="btn">${el}</span>`);
-return htmlElements.join("");
-
-}
+const createElements = (arr) => {
+  const htmlElements = arr.map((el) => `<span class="btn">${el}</span>`);
+  return htmlElements.join("");
+};
+const manageSpinner = (status) => {
+  if (status == true) {
+    document.getElementById("spinner").classList.remove("hidden");
+    document.getElementById("word-container").classList.add("hidden");
+  } else {
+    document.getElementById("word-container").classList.remove("hidden");
+    document.getElementById("spinner").classList.add("hidden");
+  }
+};
 
 const loadLesson = () => {
   fetch("https://openapi.programming-hero.com/api/levels/all") //promise of response
@@ -16,6 +24,7 @@ const removeActive = () => {
 };
 
 const loadLevelWord = (id) => {
+  manageSpinner(true);
   const url = `https://openapi.programming-hero.com/api/level/${id}`;
   fetch(url)
     .then((res) => res.json()) //promise of json data
@@ -61,7 +70,6 @@ const displayWordDetails = (word) => {
   document.getElementById("word_modal").showModal();
 };
 
-
 const displayLevelWord = (words) => {
   const wordContainer = document.getElementById("word-container");
   wordContainer.innerHTML = "";
@@ -76,6 +84,7 @@ const displayLevelWord = (words) => {
         <h2 class="font-bold text-3xl">নেক্সট Lesson এ যান</h2>
       </div>
     `;
+    manageSpinner(false);
     return;
   }
   // id:5
@@ -101,13 +110,16 @@ const displayLevelWord = (words) => {
       word.pronunciation ? word.pronunciation : "Pronounciation পাওয়া  যায়নি"
     }"</div>
         <div class="flex justify-between items-center">
-        <button onclick="loadWordDetail(${word.id})" class="btn bg-[#1A91FF10] hover:bg-[#1A91FF80]"><i class="fa-solid fa-circle-info"></i></button>
+        <button onclick="loadWordDetail(${
+          word.id
+        })" class="btn bg-[#1A91FF10] hover:bg-[#1A91FF80]"><i class="fa-solid fa-circle-info"></i></button>
        <button class="btn bg-[#1A91FF10] hover:bg-[#1A91FF80]"><i class="fa-solid fa-volume-high"></i></button>
       </div>
       </div>
     `;
     wordContainer.append(card);
   });
+  manageSpinner(false);
 };
 
 const displayLesson = (lessons) => {
